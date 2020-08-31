@@ -53,58 +53,59 @@
 <body>
     <section id="liste"></section>
     <template>
-        <article class="persongalleri">
-            <h2 class="navn"></h2>
-            <p class="efternavn"></p>
-            <p class="køn"></p>
-            <p class="alder"></p>
-            <p class="religion"></p>
-            <p class="hobby"></p>
-            <p class="kæledyr"></p>
-            <p class="job"></p>
-            <p class="by"></p>
-            <p class="land"></p>
+        <article>
             <img src="" alt="">
+            <h3 class="navn"></h3>
+            <h2 class="efternavn"></h2>
+            <div class="info">
+                <p class="kon"></p>
+                <p class="by"></p>
+                <p class="land"></p>
+                <p class="job"></p>
+                <p class="hobby"></p>
+            </div>
+
         </article>
     </template>
     <script>
-        const list = document.querySelector("#liste");
-        const personTemplate = document.querySelector("template");
+        const fil = "dyrIJSON.json";
+        const link = "https://spreadsheets.google.com/feeds/list/1mtHhpoEkYqVqr1TSnKQ1_sQZWI7FRVjcw3H1oatDOVQ/od6/public/values?alt=json";
+        let filter = "k";
+        let personer;
 
-
-
-        const url = "https://spreadsheets.google.com/feeds/list/1mtHhpoEkYqVqr1TSnKQ1_sQZWI7FRVjcw3H1oatDOVQ/od6/public/values?alt=json";
-
-        async function hentData() {
-            const respons = await fetch(url);
-
-
-            const json = await respons.json();
+        async function hentdata(fil) {
+            const resultat = await fetch(link);
+            const json = await resultat.json();
             vis(json);
+
+            console.log(json);
         }
 
         function vis(personer) {
             console.log(personer);
+
+
+            let container = document.querySelector("section");
+            let temp = document.querySelector("template");
+            //løb igennem array "dyr"
             personer.feed.entry.forEach(person => {
-                let clone = personTemplate.cloneNode(true).content;
-                clone.querySelector(".navn").textContent = person.gsx$navn.$t;
-                clone.querySelector(".efternavn").textContent = person.gsx$efternavn.$t;
-                clone.querySelector(".efternavn").textContent = person.gsx$køn.$t;
-                clone.querySelector(".alder").textContent = person.gsx$alder.$t;
-                clone.querySelector(".religion").textContent = person.gsx$religion.$t;
-                clone.querySelector(".hobby").textContent = person.gsx$hobby.$t;
-                clone.querySelector(".kæledyr").textContent = person.gsx$kæledyr.$t;
-                clone.querySelector(".job").textContent = person.gsx$job.$t;
-                clone.querySelector(".by").textContent = person.gsx$by.$t;
-                clone.querySelector(".land").textContent = person.gsx$land.$t;
-                clone.querySelector("img").src = person.gsx$billede.$t;
-                list.append(clone);
+                if (filter == person.gsx$køn.$t.toLowerCase()) {
 
-
+                    let klon = temp.cloneNode(true).content;
+                    klon.querySelector(".navn").textContent = person.gsx$navn.$t;
+                    klon.querySelector(".efternavn").textContent = person.gsx$efternavn.$t;
+                    klon.querySelector(".by").textContent = person.gsx$by.$t;
+                    klon.querySelector(".land").textContent = person.gsx$land.$t;
+                    klon.querySelector(".hobby").textContent = person.gsx$hobby.$t;
+                    klon.querySelector(".job").textContent = person.gsx$job.$t;
+                    klon.querySelector("img").src = person.gsx$billede.$t
+                    container.appendChild(klon);
+                }
             })
         }
 
-        hentData();
+
+
+        hentdata(fil);
     </script>
 </body></html>
-
